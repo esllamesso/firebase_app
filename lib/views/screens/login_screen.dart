@@ -1,3 +1,4 @@
+import 'package:firebase_app/views/screens/register_screen.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -29,10 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 80,
-            horizontal: 20,
-          ),
+          padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
 
           child: Form(
             key: formKey,
@@ -43,18 +41,12 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 const Text(
                   "Login",
-                  style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
                 ),
 
                 const SizedBox(height: 12),
 
-                const Text(
-                  "Welcome back 👏",
-                  style: TextStyle(fontSize: 18),
-                ),
+                const Text("Welcome back 👏", style: TextStyle(fontSize: 18)),
 
                 const SizedBox(height: 70),
 
@@ -106,9 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         });
                       },
                       icon: Icon(
-                        isHidden
-                            ? Icons.visibility
-                            : Icons.visibility_off,
+                        isHidden ? Icons.visibility : Icons.visibility_off,
                       ),
                     ),
 
@@ -145,10 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     child: const Text(
                       "Login",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                      ),
+                      style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
                   ),
                 ),
@@ -161,15 +148,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     const Text(
                       "Don't Have an account ?",
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
+                      style: TextStyle(fontSize: 16),
                     ),
 
                     const SizedBox(width: 10),
 
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RegisterScreen(),
+                          ),
+                        );
+                      },
 
                       child: const Text(
                         "Sign Up",
