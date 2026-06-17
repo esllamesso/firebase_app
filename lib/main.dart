@@ -1,8 +1,30 @@
+import 'package:firebase_app/core/reposatories/auth_repository.dart';
+import 'package:firebase_app/logic/blocs/login/login_bloc.dart';
+import 'package:firebase_app/logic/blocs/register/register_bloc.dart';
 import 'package:firebase_app/views/screens/welcome_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'core/reposatories/place_repository.dart';
+import 'logic/blocs/places/place_bloc.dart';
+import 'logic/blocs/places/place_event.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => RegisterBloc(AuthRepository())),
+        BlocProvider(create: (_) => LoginBloc(AuthRepository())),
+        BlocProvider(
+          create: (_) => PlacesBloc(PlaceRepository())..add(GetPlacesEvent()),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -17,4 +39,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../logic/blocs/places/place_bloc.dart';
+import '../../logic/blocs/places/place_state.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -12,19 +16,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, String>> places = [
-      {
-        "image": "assets/images/pic1.png",
-        "title": "Alley Palace",
-        "rate": "4.1",
-      },
-      {
-        "image": "assets/images/pic2.png",
-        "title": "Coeurdes Alpes",
-        "rate": "4.5",
-      },
-    ];
-
     List<String> cate = ["Location", "Hotels", "Foods", "Adventure"];
 
     return Scaffold(
@@ -111,19 +102,17 @@ class _HomeState extends State<Home> {
                       height: 41,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(33),
-                        color:
-                            selectedIndex == index
-                                ? Colors.blue.shade100
-                                : Colors.transparent,
+                        color: selectedIndex == index
+                            ? Colors.blue.shade100
+                            : Colors.transparent,
                       ),
                       child: Center(
                         child: Text(
                           cate[index],
                           style: TextStyle(
-                            color:
-                                selectedIndex == index
-                                    ? Colors.blue
-                                    : Colors.black,
+                            color: selectedIndex == index
+                                ? Colors.blue
+                                : Colors.black,
                           ),
                         ),
                       ),
@@ -150,66 +139,110 @@ class _HomeState extends State<Home> {
                 ),
               ],
             ),
-            SizedBox(height:  12),
+            SizedBox(height: 12),
 
-            SizedBox(
-              height: 250,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                clipBehavior: Clip.none,
-                itemCount: places.length,
-                itemBuilder: (context, index) {
-                 return  Container(
-                   margin: EdgeInsets.all(15),
-                    width: 188,
-                    height: 240,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: AssetImage(places[index]["image"]!),
-                      ),
+            BlocBuilder<PlacesBloc, PlacesState>(
+              builder: (context, state) {
+                if (state is PlacesLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (state is PlacesSuccess) {
+                  return SizedBox(
+                    height: 250,
+
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: state.places.length,
+                      itemBuilder: (context, index) {
+                        final place = state.places[index];
+
+                        return Container(
+                          margin: const EdgeInsets.only(right: 12),
+                          width: 188,
+
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(place.image),
+                            ),
+                          ),
+
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.all(10),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
+                                ),
+
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(.6),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+
+                                child: Text(
+                                  place.title,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                margin: const EdgeInsets.only(
+                                  left: 10,
+                                  right: 10,
+                                  bottom: 10,
+                                ),
+
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
+                                ),
+
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(.6),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                      size: 18,
+                                    ),
+
+                                    const SizedBox(width: 4),
+
+                                    Text(
+                                      place.rate,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     ),
-                   child: Column(
-                     mainAxisAlignment: MainAxisAlignment.end,
-                     children: [
-
-                       Container(
-                         decoration: BoxDecoration(
-                           borderRadius: BorderRadius.circular(59),
-                           color: Colors.grey,
-                         ),
-                         child: Text(
-                           places[index]["title"]!, style: TextStyle(
-                           color: Colors.white,
-                         ),
-                         ),
-                       ),
-                       Row(
-                         children: [
-                           Container(
-                             decoration: BoxDecoration(
-                               borderRadius: BorderRadius.circular(59),
-                               color: Colors.grey,
-                             ),
-                             child: Row(
-                               children: [
-                                 Icon(Icons.star, color: Colors.amber),
-                                 Text(
-                                   places[index]["rate"]!, style: TextStyle(
-                                   color: Colors.white,
-                                 ),
-                                 ),
-                               ],
-                             ),
-                           ),
-                         ],
-                       )
-                     ],
-                   ),
                   );
-                },
-              ),
+                }
+
+                return const SizedBox();
+              },
             ),
           ],
         ),

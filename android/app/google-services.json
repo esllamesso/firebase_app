@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "658612338976",
+    "project_id": "learntravel-1c600",
+    "storage_bucket": "learntravel-1c600.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:658612338976:android:114f80bfd79b9612b19745",
+        "android_client_info": {
+          "package_name": "com.example.firebase_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALqSp7vkRDtUeUUupZRGYOr9FxOIMWY8g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
