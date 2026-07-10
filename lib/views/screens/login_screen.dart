@@ -1,6 +1,7 @@
 import 'package:firebase_app/views/screens/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../core/services/firebase_service.dart';
 import '../../logic/blocs/login/login_bloc.dart';
 import '../../logic/blocs/login/login_event.dart';
 import '../../logic/blocs/login/login_states.dart';
@@ -14,6 +15,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
+  final FirebaseService firebaseService = FirebaseService();
+
   final formKey = GlobalKey<FormState>();
 
   final emailController = TextEditingController();
@@ -271,6 +275,21 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ],
+                    ),
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          final user = await firebaseService.signInWithGoogle();
+
+                          if (user != null && context.mounted) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (_) => Home()),
+                            );
+                          }
+                        },
+                        child: const Text("Continue with Google"),
+                      ),
                     ),
                   ],
                 ),

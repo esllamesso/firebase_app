@@ -1,8 +1,9 @@
+import 'package:firebase_app/views/widgets/cate_widget.dart';
+import 'package:firebase_app/views/widgets/places_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../logic/blocs/places/place_bloc.dart';
-import '../../logic/blocs/places/place_state.dart';
+import '../../core/services/firebase_service.dart';
+import 'login_screen.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -12,14 +13,31 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int selectedIndex = 0;
 
+  final FirebaseService firebaseService = FirebaseService();
   @override
   Widget build(BuildContext context) {
-    List<String> cate = ["Location", "Hotels", "Foods", "Adventure"];
 
+    final user = firebaseService.currentUser;
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(actions: [ IconButton(
+        onPressed: () async {
+          await firebaseService.signOut();
+
+          if (context.mounted) {
+            Navigator.pushAndRemoveUntil(
+              context,
+
+              MaterialPageRoute(builder: (_) => LoginScreen()),
+
+                  (route) => false,
+            );
+          }
+        },
+
+        icon: Icon(Icons.logout),
+      ),],),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 44),
         child: Column(
@@ -79,48 +97,7 @@ class _HomeState extends State<Home> {
               ),
             ),
             SizedBox(height: 24),
-            SizedBox(
-              height: 50,
-              child: ListView.builder(
-                clipBehavior: Clip.none,
-                scrollDirection: Axis.horizontal,
-                itemCount: cate.length,
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    hoverColor: Colors.transparent,
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    onTap: () {
-                      setState(() {
-                        selectedIndex = index;
-                      });
-                    },
-                    child: Container(
-                      margin: EdgeInsets.only(right: 12),
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      width: 110,
-                      height: 41,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(33),
-                        color: selectedIndex == index
-                            ? Colors.blue.shade100
-                            : Colors.transparent,
-                      ),
-                      child: Center(
-                        child: Text(
-                          cate[index],
-                          style: TextStyle(
-                            color: selectedIndex == index
-                                ? Colors.blue
-                                : Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+            CateWidget(),
             SizedBox(height: 32),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -140,110 +117,7 @@ class _HomeState extends State<Home> {
               ],
             ),
             SizedBox(height: 12),
-
-            BlocBuilder<PlacesBloc, PlacesState>(
-              builder: (context, state) {
-                if (state is PlacesLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (state is PlacesSuccess) {
-                  return SizedBox(
-                    height: 250,
-
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: state.places.length,
-                      itemBuilder: (context, index) {
-                        final place = state.places[index];
-
-                        return Container(
-                          margin: const EdgeInsets.only(right: 12),
-                          width: 188,
-
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(place.image),
-                            ),
-                          ),
-
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.all(10),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 6,
-                                ),
-
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(.6),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-
-                                child: Text(
-                                  place.title,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-
-                              Container(
-                                margin: const EdgeInsets.only(
-                                  left: 10,
-                                  right: 10,
-                                  bottom: 10,
-                                ),
-
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 6,
-                                ),
-
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(.6),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(
-                                      Icons.star,
-                                      color: Colors.amber,
-                                      size: 18,
-                                    ),
-
-                                    const SizedBox(width: 4),
-
-                                    Text(
-                                      place.rate,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                }
-
-                return const SizedBox();
-              },
-            ),
+            PlacesWidget(),
           ],
         ),
       ),

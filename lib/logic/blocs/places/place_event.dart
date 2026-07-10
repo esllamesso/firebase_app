@@ -1,11 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-abstract class PlacesEvent
-    extends Equatable {
-
+abstract class PlaceEvent extends Equatable{
   @override
   List<Object?> get props => [];
 }
-
-class GetPlacesEvent
-    extends PlacesEvent {}
+class GetPlacesEvent extends PlaceEvent{}

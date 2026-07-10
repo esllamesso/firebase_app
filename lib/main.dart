@@ -18,9 +18,7 @@ void main() async {
       providers: [
         BlocProvider(create: (_) => RegisterBloc(AuthRepository())),
         BlocProvider(create: (_) => LoginBloc(AuthRepository())),
-        BlocProvider(
-          create: (_) => PlacesBloc(PlaceRepository())..add(GetPlacesEvent()),
-        ),
+        BlocProvider(create: (_) => PlaceBloc(PlaceRepository())..add(GetPlacesEvent())),
       ],
       child: const MyApp(),
     ),

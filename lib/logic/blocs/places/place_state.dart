@@ -1,17 +1,16 @@
 import 'package:equatable/equatable.dart';
+import 'package:firebase_app/data/place_model.dart';
 
-import '../../../data/place_model.dart';
-
-abstract class PlacesState extends Equatable {
+abstract class PlacesStates extends Equatable {
   @override
   List<Object?> get props => [];
 }
 
-class PlacesInitial extends PlacesState {}
+class PlacesInitial extends PlacesStates {}
 
-class PlacesLoading extends PlacesState {}
+class PlacesLoading extends PlacesStates {}
 
-class PlacesSuccess extends PlacesState {
+class PlacesSuccess extends PlacesStates {
   final List<PlaceModel> places;
 
   PlacesSuccess(this.places);
@@ -20,7 +19,7 @@ class PlacesSuccess extends PlacesState {
   List<Object?> get props => [places];
 }
 
-class PlacesError extends PlacesState {
+class PlacesError extends PlacesStates {
   final String message;
 
   PlacesError(this.message);

@@ -1,28 +1,25 @@
+import 'package:firebase_app/core/reposatories/place_repository.dart';
 import 'package:firebase_app/logic/blocs/places/place_event.dart';
 import 'package:firebase_app/logic/blocs/places/place_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/reposatories/place_repository.dart';
 
-
-class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
+class PlaceBloc extends Bloc<PlaceEvent, PlacesStates>{
   final PlaceRepository repository;
-
-  PlacesBloc(this.repository) : super(PlacesInitial()) {
+  PlaceBloc(this.repository) : super(PlacesInitial()) {
     on<GetPlacesEvent>(getPlaces);
   }
 
   Future<void> getPlaces(
-    GetPlacesEvent event,
-
-    Emitter<PlacesState> emit,
-  ) async {
+      GetPlacesEvent event,
+      Emitter<PlacesStates> emit,
+      ) async {
     emit(PlacesLoading());
 
-    try {
+    try{
       final places = await repository.getPlaces();
-
       emit(PlacesSuccess(places));
-    } catch (e) {
+    }catch(e){
+
       emit(PlacesError(e.toString()));
     }
   }
