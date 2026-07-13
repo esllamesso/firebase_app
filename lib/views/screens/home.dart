@@ -13,31 +13,32 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
   final FirebaseService firebaseService = FirebaseService();
+
   @override
   Widget build(BuildContext context) {
-
     final user = firebaseService.currentUser;
+
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(actions: [ IconButton(
-        onPressed: () async {
-          await firebaseService.signOut();
-
-          if (context.mounted) {
-            Navigator.pushAndRemoveUntil(
-              context,
-
-              MaterialPageRoute(builder: (_) => LoginScreen()),
-
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await firebaseService.signOut();
+              if (context.mounted) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => LoginScreen()),
                   (route) => false,
-            );
-          }
-        },
+                );
+              }
+            },
 
-        icon: Icon(Icons.logout),
-      ),],),
+            icon: Icon(Icons.logout),
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 44),
         child: Column(

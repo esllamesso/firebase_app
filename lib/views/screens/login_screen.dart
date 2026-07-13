@@ -15,7 +15,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   final FirebaseService firebaseService = FirebaseService();
 
   final formKey = GlobalKey<FormState>();
@@ -193,56 +192,77 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     const Spacer(),
 
-                    SizedBox(
-                      width: double.infinity,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        SizedBox(
+                          width: 300,
 
-                      height: 55,
+                          height: 55,
 
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
 
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+
+                            onPressed: state is LoginLoading
+                                ? null
+                                : () {
+                                    if (formKey.currentState!.validate()) {
+                                      context.read<LoginBloc>().add(
+                                        LoginButtonPressed(
+                                          email: emailController.text.trim(),
+
+                                          password: passController.text.trim(),
+                                        ),
+                                      );
+                                    }
+                                  },
+
+                            child: state is LoginLoading
+                                ? const SizedBox(
+                                    width: 25,
+
+                                    height: 25,
+
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Text(
+                                    "Login",
+
+                                    style: TextStyle(
+                                      color: Colors.white,
+
+                                      fontSize: 18,
+                                    ),
+                                  ),
                           ),
                         ),
+                        InkWell(
+                          onTap: () async {
+                            final user = await firebaseService.signInWithGoogle();
 
-                        onPressed:
-                        state is LoginLoading
-                            ? null
-                            : () {
-                          if (formKey.currentState!.validate()) {
-                            context.read<LoginBloc>().add(
-                              LoginButtonPressed(
-                                email: emailController.text.trim(),
+                            if(user != null && context.mounted){
+                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> Home()));
 
-                                password: passController.text.trim(),
-                              ),
-                            );
-                          }
-                        },
+                            }
+                          },
+                          child: Container(
+                            height: 30,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                            ),
+                            child: Image.asset("assets/images/google.png"),
 
-                        child:
-                        state is LoginLoading
-                            ? const SizedBox(
-                          width: 25,
-
-                          height: 25,
-
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
                           ),
                         )
-                            : const Text(
-                          "Login",
-
-                          style: TextStyle(
-                            color: Colors.white,
-
-                            fontSize: 18,
-                          ),
-                        ),
-                      ),
+                      ],
                     ),
                     SizedBox(height: 15),
                     Row(
@@ -275,21 +295,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ],
-                    ),
-                    Center(
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          final user = await firebaseService.signInWithGoogle();
-
-                          if (user != null && context.mounted) {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (_) => Home()),
-                            );
-                          }
-                        },
-                        child: const Text("Continue with Google"),
-                      ),
                     ),
                   ],
                 ),

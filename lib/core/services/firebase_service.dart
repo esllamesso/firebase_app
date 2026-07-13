@@ -8,7 +8,6 @@ class FirebaseService {
   Future<UserCredential?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-
       if (googleUser == null) {
         return null;
       }
@@ -22,6 +21,7 @@ class FirebaseService {
       );
 
       return await _auth.signInWithCredential(credential);
+
     } catch (e) {
       rethrow;
     }
@@ -32,5 +32,7 @@ class FirebaseService {
     await _auth.signOut();
   }
 
-  User? get currentUser => _auth.currentUser;
+  User? get currentUser {
+    return _auth.currentUser;
+  }
 }
